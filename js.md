@@ -152,60 +152,152 @@ a <   c
 * scrollWidth/scrollHeight返回值包含content + padding + 溢出内容的尺寸
 
 ##8 Promise原理
-首先先定义一个Promise函数，并且接受一个executor执行函数，将resolve和reject传参传进去，定义私有属性status，value，reason，onResolvedCallbacks，onRejectedCallbacks。promise有三个状态：初始状态为pending，成功为resolved，失败为reject。对promise的prototype挂载一个then方法（构造函数.prototype===构造函数的实例）,then方法中传入一个成功的回掉和失败毁掉，若成功去成功回调，失败取失败回调。onResolvedCallbacks存放成功异步函数的回调，存放失败异步函数回调。代码
+首先先定义一个Promise函数，并且接受一个executor执行函数，将resolve和reject传参传进去，定义私有属性status，value，reason，onResolvedCallbacks，onRejectedCallbacks。promise有三个状态：初始状态为pending，成功为resolved，失败为reject。对promise的prototype挂载一个then方法（构造函数.prototype===构造函数的实例）,then方法中传入一个成功的回掉和失败毁掉，若成功去成功回调，失败取失败回调。onResolvedCallbacks存放成功异步函数的回调，存放失败异步函数回调。
+
+###初步实现
 
 ```
-function Promise(executor){
-    let self = this;
-    self.status = 'pending';
-    self.value = undefined;
-    self.reason = undefined;
-    self.onResolvedCallbacks= [];  //存放成功的回掉
-    self.onRejectedCallbacks= [];  //存放失败的回掉
-    function resolve(value){
-        if(self.status === 'pending'){
-            self.status = 'resolved';
-            self.value = value;
-            self.onResolvedCallbacks.forEach(function(fn){
-                fn();
-            });
-        }
-    }
-    function reject(reason){
-        if(self.status === 'pending'){
-            self.status = 'rejected';
-            self.reason = reason;
-            self.onRejectedCallbacks.forEach(function(fn){
-                fn();
-            });
-        }
-    }
-    try{
-        executor(resolve,reject);
-    }catch(e){      //处理异常状态,传给reject
-        reject(e);
-    }
+function mypromise(constructor){
+	let self=this
+	self.status="pending"
+	self.value=undefined
+	self.reason=undefined
+	function resolve(value){
+		if(self==="pending"){
+			self.value=value;
+			self.status="resolved"
+		}
+	}
+	function reject(reason){
+		if(self.status==="pending"){
+			self.reason=reason
+			self.status="rejected"
+		}
+	}
+	try{
+		constructor(resolve,reject)
+	}catch(e){
+		reject(e)
+	}
+	}
+	//定义then方法
+	mypromise.prototype.then=function(onFullfilled,onRejected){
+		let self = this
+		switch(self.status){
+			case "resolved":
+				onFullfilled(self.value)
+				break
+			case "rejected":
+				onRejected(self.reason)
+				break
+			default:	
+		}
+	}
+```
+上述就是一个初始版本的myPromise，在myPromise里发生状态改变，然后在相应的then方法里面根据不同的状态可以执行不同的操作。但无法处理异步resolve
+
+###异步实现
+
+为了处理异步resolve，我们修改myPromise的定义，用2个数组onFullfilledArray和onRejectedArray来保存异步的方法。在状态发生改变时，一次遍历执行数组中的方法
+
+```
+function mypromise(constructor){
+    let self=this;
+    self.status="pending" //定义状态改变前的初始状态
+    self.value=undefined;//定义状态为resolved的时候的状态
+    self.reason=undefined;//定义状态为rejected的时候的状态
+    self.onFullfilledArray=[];
+    self.onRejectedArray=[];
+    function resolve(value){
+    	if(self.status==="pending"){
+    		self.value=value
+    		self.status="resolve"
+    		self.onFullfilledArray.forEach((item)=>{
+    			item(self.value)
+    		})
+    	}
+    }
+    function reject(reason){
+    	if(self.status==="pending"){
+    		self.reason=reason
+    		self.status="rejected"
+    		self.onRejectedArray.forEach((item)=>{
+    			item(self.reason)
+    		})
+    	}
+    }
+    try{
+    	constructor(resolve,reject)
+    }catch(e){
+    	reject(e)
+    }
+}
+//then实现
+mypromise.prototype.then=function(onFullfilled, onRejected){
+	let self = this
+	switch(self.status){
+		case "pending":
+			self.onFullfilledArray.push(function(){
+				onFullfilled(self.value)
+			})
+			self.onRejectedArray.push(funciton(){
+				onRejected(self.reason)
+			})
+		case "resolved":
+				onFullfilled(self.value)
+				break
+			case "rejected":
+				onRejected(self.reason)
+				break
+			default:
+				
+	}
 }
 
-Promise.prototype.then=function(onFulfilled,onRejected){
-    let self = this;
-    if(self.status === 'resolved'){
-        onFulfilled(self.value);
-    }
-    if(self.status === 'rejected'){
-        onRejected(self.reason);
-    }
-    if(self.status === 'pending'){
-        self.onResolvedCallbacks.push(function(){
-            onFulfilled(self.value);
-        });
-        self.onRejectedCallbacks.push(function(){
-            onRejected(self.reason);
-        });
-    }
-};
 ```
-(链式调用的源码分析看不懂)
+
+这样，通过两个数组，在状态发生改变之后再开始执行，这样可以处理异步resolve无法调用的问题。这个版本的myPromise就能处理所有的异步，那么这样做就完整了吗？
+
+没有，我们做Promise/A+规范的最大的特点就是链式调用，也就是说then方法返回的应该是一个promise。
+
+###then方法实现链式调用
+
+```
+mypromise.prototype.then=function(onFullfilled,onRejected){
+	let self=this
+	let promise2
+	switch(self.status){
+		case "pending":
+			promise2 = new promise((resolve,reject)=>{
+				self.onFullfilledArray.push(function(){
+					resolve(onFullfilled(self.value))
+				})
+				self.onRejectArray.push(function(){
+					resolve(onRejected(self.value))
+				})
+			})
+		case "resolved":
+			promise = new mypromise((resolve,reject)=>{
+				try(
+					resolve(onFullfilled(self.value))
+				)catch(e){
+					reject(e)
+				}
+			})
+		case "rejected":
+			promise2 = new mypromise((resolve,reject)=>{
+				try(
+					resolve(onRejectd(self.reason))
+				)catch(e){
+					reject(e)
+				}
+			})		
+			
+	}
+	return promise2
+}
+```
+
 ### promise使用
 基本使用
 
@@ -305,7 +397,6 @@ var person2 = new Person('Mick', 23, 'Doctor');
 
 在默认情况下，所有的原型对象都会自动获得一个 constructor（构造函数）属性，这个属性（是一个指针）指向 prototype 属性所在的函数（Person）
 
-即构造函数.prototype===构造函数实例
 
 **结论：原型对象（Person.prototype）是 构造函数（Person）的一个实例。**
 
@@ -409,6 +500,37 @@ Date.constructor == Function //true
 **所有的构造器都来自于 Function.prototype，甚至包括根构造器Object及Function自身。所有构造器都继承了·Function.prototype·的属性及方法。如length、call、apply、bind**
 
 但是Funciton.prototype也是一个对象，也是object的实例。即console.log(Function.prototype.__proto__ === Object.prototype) // true
+
+###举个列子
+
+```
+function person(){}
+let per1 = new person()
+```
+
+可以得出
+
+```
+per1.contructor = person
+person.prototype.contructor = person
+per1.__proto__=person.prototype
+
+person.__proto__=Function.prototype
+person.constructor = Function
+person.prototype.__proto__=Object.prototype
+
+Function.__proto__=Function.prototype
+Function.constructor = Function
+
+Object.__proto__=Function.prototype
+Object.contructor=Function
+//Object 是函数对象，是通过new Function()创建的，所以Object.__proto__指向Function.prototype。
+
+Function.prototype.__proto__===Object.prototype
+Object.prototype.__proto__===null
+
+
+```
 
 ## 9JavaScript闭包
 
@@ -881,3 +1003,151 @@ myFunc(function(){
 
 根本原因在于解析器对于这两种定义方式读取的顺序不同：解析器会实现读取函数声明，即函数声明放在任意位置都可以被调用；而对于函数表达式，解析器只有在读到函数表达式所在那一行时才会开始执行（详情请看第一部分“函数定义的方式”）。
 
+##深拷贝实现
+
+```
+    //定义检测数据类型的功能函数
+    function checkedType(target) {
+      return Object.prototype.tostring.call(target).slice(8, -1)
+    }
+    //实现深度克隆---对象/数组
+    function clone(target) {
+      //判断拷贝的数据类型
+      //初始化变量result 成为最终克隆的数据
+      let result, targetType = checkedType(target)
+      if (targetType === 'object') {
+        result = {}
+      } else if (targetType === 'Array') {
+        result = []
+      } else {
+        return target
+      }
+      //遍历目标数据
+      for (let i in target) {
+        //获取遍历数据结构的每一项值。
+        let value = target[i]
+        //判断目标结构里的每一值是否存在对象/数组
+        if (checkedType(value) === 'Object' ||
+          checkedType(value) === 'Array') { //对象/数组里嵌套了对象/数组
+          //继续遍历获取到value值
+          result[i] = clone(value)
+        } else { //获取到value值是基本的数据类型或者是函数。
+          result[i] = value;
+        }
+      }
+      return result
+    }
+
+```
+
+##JS拖拽功能的实现
+
+```
+首先是三个事件，分别是mousedown，mousemove，mouseup
+当鼠标点击按下的时候，需要一个tag标识此时已经按下，可以执行mousemove里面的具体方法。
+
+
+clientX，clientY标识的是鼠标的坐标，分别标识横坐标和纵坐标，并且我们用offsetX和offsetY来表示元素的元素的初始坐标，移动的举例应该是：
+鼠标移动时候的坐标-鼠标按下去时候的坐标。
+也就是说定位信息为：
+鼠标移动时候的坐标-鼠标按下去时候的坐标+元素初始情况下的offetLeft.
+
+
+还有一点也是原理性的东西，也就是拖拽的同时是绝对定位，我们改变的是绝对定位条件下的left
+以及top等等值。
+
+```
+
+##js中的job queue
+
+js中的事件执行，首先执行主线程中的同步任务，当主线程任务执行完毕后，再从event loop(job queue)中读取异步任务
+
+在Job queue中的队列分为两种类型：macro-task和microTask。我们举例来看执行顺序的规定，我们设
+
+* macro-task队列包含任务: a1, a2 , a3(宏任务)
+* micro-task队列包含任务: b1, b2 , b3（微任务）
+
+执行顺序为，首先执行marco-task队列开头的任务，也就是 a1 任务，执行完毕后，在执行micro-task队列里的所有任务，也就是依次执行b1, b2 , b3 ，执行完后清空micro-task中的任务，接着执行marco-task中的第二个任务，依次循环。
+
+macro-task队列真实包含任务：
+
+script(主程序代码),setTimeout, setInterval, setImmediate, I/O, UI rendering
+
+micro-task队列真实包含任务：
+
+process.nextTick, Promises, Object.observe, MutationObserver
+
+由此我们得到的执行顺序应该为：
+
+script(主程序代码)—>process.nextTick—>Promises...——>setTimeout——>setInterval——>setImmediate——> I/O——>UI rendering
+
+##实现node中的Events模块
+
+实现类似于
+
+```
+var events=require('events');
+var eventEmitter=new events.EventEmitter();
+eventEmitter.on('say',function(name){
+    console.log('Hello',name);
+})
+eventEmitter.emit('say','Jony yu');
+```
+
+实现
+
+```
+function Events(){
+	let self = this 
+	self.on = function(events,callback){
+		if(!self.handles){
+			self.handles={}
+		}
+		if(!self.handles[events]){
+			self.handles[events]=[]
+		}
+		this.handles[events].push(callback)
+		
+	}
+	self.emit=function(events,payload){
+		if(self.handles[events]){
+			self.handle[evnets].forEache((item)=>{
+				item(payload)
+			})
+		}
+	}
+	return self
+}
+```
+
+##cookie
+
+###coookie的构成
+
+```
+1. 名称 2.值 3.域 4.路径 5.失效时间 6.安全标志
+例子：一个响应头
+HTTP/1.1 200 OK
+content-type:text/html
+Set-Coookie:name=value;domain=.wrox.com;exoires=Mon,22-Jan-07 07:10:24;
+```
+
+###javascript中的cookie
+使用`document.cookie`
+
+1.使用获取cookie时返回：‘name=value1;name2=value2;name3=value3’。返回一系列由分号分隔开的名值对
+
+2.使用设置cookie：
+
+```
+设置的cookie格式如下：
+document.cookie="name=value;expires=有效时间;path=domain_path;domain=domain_name;secure"
+设置secure表明这个cookie只有通过ssl连接才能传输
+```
+
+###封装cookie
+有JavaScript中读写cookie不方便，所以需要封装方法
+
+```
+红书p631
+```
