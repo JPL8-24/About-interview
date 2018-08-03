@@ -137,4 +137,56 @@ session:
 在服务器端会创建一个session对象，产生一个sessionID来标识这个session对象，然后将这个sessionID放入到Cookie中发送到客户端，下一次访问时，sessionID会发送到服务器，在服务器端进行识别不同的用户 ,
 Session是依赖Cookie的，如果Cookie被禁用，那么session也将失效 
 
+## web worker
+
+Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。在主线程运行的同时，Worker 线程在后台运行，两者互不干扰。等到 Worker 线程完成计算任务，再把结果返回给主线程。这样的好处是，一些计算密集型或高延迟的任务，被 Worker 线程负担了，主线程（通常负责 UI 交互）就会很流畅，不会被阻塞或拖慢。
+
+Worker 线程一旦新建成功，就会始终运行，不会被主线程上的活动（比如用户点击按钮、提交表单）打断。这样有利于随时响应主线程的通信。但是，这也造成了 Worker 比较耗费资源，不应该过度使用，而且一旦使用完毕，就应该关闭。
+
+Web Worker 有以下几个使用注意点。
+
+（1）同源限制
+
+分配给 Worker 线程运行的脚本文件，必须与主线程的脚本文件同源。
+
+（2）DOM 限制
+
+Worker 线程所在的全局对象，与主线程不一样，无法读取主线程所在网页的 DOM 对象，也无法使用document、window、parent这些对象。但是，Worker 线程可以navigator对象和location对象。
+
+（3）通信联系
+
+Worker 线程和主线程不在同一个上下文环境，它们不能直接通信，必须通过消息完成。
+
+（4）脚本限制
+
+Worker 线程不能执行alert()方法和confirm()方法，但可以使用 XMLHttpRequest 对象发出 AJAX 请求。
+
+（5）文件限制
+
+Worker 线程无法读取本地文件，即不能打开本机的文件系统（file://），它所加载的脚本，必须来自网络。
+
+## 严格模式的限制
+
+* 变量必须声明后再使用
+* 函数的参数不能有同名属性，否则报错
+* 不能使用with语句
+* 禁止this指向全局对象
+
+##attribute和property的区别是什么？
+
+* attribute是dom元素在文档中作为html标签拥有的属性；
+* property就是dom元素在js中作为对象拥有的属性。
+* 对于html的标准属性来说，attribute和property是同步的，是会自动更新的
+* 但是对于自定义的属性来说，他们是不同步的
+
+## display:inline-block 什么时候不会显示间隙？(携程)
+
+```
+移除空格
+使用margin负值
+使用font-size:0
+letter-spacing
+word-spacing
+```
+
 
