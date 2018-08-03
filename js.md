@@ -1151,3 +1151,18 @@ document.cookie="name=value;expires=有效时间;path=domain_path;domain=domain_
 ```
 红书p631
 ```
+
+##apply和call的实现原理
+
+```
+Function.prototype.call2=function(context){
+    var context = context || window;
+	context.fn = this;
+    var args = [];
+	for(var i = 1, len = arguments.length; i < len; i++) {
+	args.push(arguments[i])
+    }
+    context.fn(...args)
+    delete context.fn
+}
+```
