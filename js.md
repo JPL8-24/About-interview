@@ -1,4 +1,4 @@
-#JavaScript原生
+# JavaScript原生
 ## 1.实现jquery中的`$`
 
 ```javascript
@@ -8,7 +8,7 @@ function $(selector){
 }
 ```
 
-##2.js原生ajax
+## 2.js原生ajax
 
 ```
     function ajax (info) {
@@ -59,7 +59,7 @@ function $(selector){
     }
 ```
 
-##3
+## 3
 []==[]//false<br>
 解析：两个引用类型， ==比较的是引用地址<br>
 巩固：[ ]== `![]` 
@@ -96,7 +96,7 @@ a <   c
      引用类型间比较大小是按照字典序比较，就是先比第一项谁大，相同再去比第二项。
 ```
 
-##6如何渲染几万条数据并不卡住界面
+## 6如何渲染几万条数据并不卡住界面
 这道题考察了如何在不卡住页面的情况下渲染数据，也就是说不能一次性将几万条都渲染出来，而应该一次渲染部分 DOM，那么就可以通过 requestAnimationFrame 来每 16 ms 刷新一次。
 
 ```
@@ -154,7 +154,7 @@ a <   c
 ##8 Promise原理
 首先先定义一个Promise函数，并且接受一个executor执行函数，将resolve和reject传参传进去，定义私有属性status，value，reason，onResolvedCallbacks，onRejectedCallbacks。promise有三个状态：初始状态为pending，成功为resolved，失败为reject。对promise的prototype挂载一个then方法（构造函数.prototype===构造函数的实例）,then方法中传入一个成功的回掉和失败毁掉，若成功去成功回调，失败取失败回调。onResolvedCallbacks存放成功异步函数的回调，存放失败异步函数回调。
 
-###初步实现
+### 初步实现
 
 ```
 function mypromise(constructor){
@@ -196,7 +196,7 @@ function mypromise(constructor){
 ```
 上述就是一个初始版本的myPromise，在myPromise里发生状态改变，然后在相应的then方法里面根据不同的状态可以执行不同的操作。但无法处理异步resolve
 
-###异步实现
+### 异步实现
 
 为了处理异步resolve，我们修改myPromise的定义，用2个数组onFullfilledArray和onRejectedArray来保存异步的方法。在状态发生改变时，一次遍历执行数组中的方法
 
@@ -260,7 +260,7 @@ mypromise.prototype.then=function(onFullfilled, onRejected){
 
 没有，我们做Promise/A+规范的最大的特点就是链式调用，也就是说then方法返回的应该是一个promise。
 
-###then方法实现链式调用
+### then方法实现链式调用
 
 ```
 mypromise.prototype.then=function(onFullfilled,onRejected){
@@ -344,7 +344,7 @@ getJSON("/posts.json").then(function(json) {
 });
 ```
 
-####异步加载图片
+#### 异步加载图片
 
 ```
 function loadImageAsync(url) {
@@ -370,9 +370,9 @@ loadImage1.then(function success() {
 });
 ```
 
-##JavaScript原型
+## JavaScript原型
 通过new function()创建的对象都是函数对象，其他的都是普通对象。
-###构造函数
+### 构造函数
 
 ```
 function Person(name, age, job) {
@@ -392,7 +392,7 @@ var person2 = new Person('Mick', 23, 'Doctor');
 ```
 
 **实例的构造函数属性(constructor)指向构造函数**
-###原型对象
+### 原型对象
 每个对象都有 __proto__ 属性，但只有函数对象才有 prototype 属性
 
 在默认情况下，所有的原型对象都会自动获得一个 constructor（构造函数）属性，这个属性（是一个指针）指向 prototype 属性所在的函数（Person）
@@ -463,7 +463,7 @@ d.__proto__ === Function.prototype;
 
 **注意事项：Object.prototype.__proto__ === null**
 
-###函数对象
+### 函数对象
 所有函数对象的proto都指向Function.prototype，它是一个空函数（Empty function）
 
 ```
@@ -501,7 +501,7 @@ Date.constructor == Function //true
 
 但是Funciton.prototype也是一个对象，也是object的实例。即console.log(Function.prototype.__proto__ === Object.prototype) // true
 
-###举个列子
+### 举个列子
 
 ```
 function person(){}
@@ -604,7 +604,7 @@ console.log(obj.getName()());  // My Object
 
 ```
 
-###闭包应用
+### 闭包应用
 在我看来，闭包作用可以是模块化编程，之前头条的面试题可以使用闭包这么实现
 
 ```
@@ -630,7 +630,7 @@ console.log(obj.getName()());  // My Object
     a.re('jha')
 ```
 
-####用法一：模块级作用域
+#### 用法一：模块级作用域
 
 ```
 (function(){
@@ -641,7 +641,7 @@ console.log(obj.getName()());  // My Object
 })();
 ```
 
-####用法二：创建私有变量
+#### 用法二：创建私有变量
 
 ```
 (funcion() {
@@ -665,7 +665,7 @@ console.log(getA()); //2
 通俗易懂
 
 ## 相关Javascript代码
-##获取url中的query
+## 获取url中的query
 
 ```
   parseSearch: function (search) {
@@ -764,7 +764,7 @@ Object.prototype.toString.call(arg)==="[object Type]"
     }(window, document))
 ```
 
-##事件委托
+## 事件委托
 
 事件委托原理：事件委托就是利用事件冒泡，只指定一个事件处理程序，就可以管理某一类型的所有事件。何为事件冒泡呢？就是事件从最深的节点开始，然后逐步向上传播事件，举个例子：页面上有这么一个节点树，div>ul>li>a;比如给最里面的a加一个click点击事件，那么这个事件就会一层一层的往外执行，执行顺序a>li>ul>div，有这样一个机制，那么我们给最外面的div加点击事件，那么里面的ul，li，a做点击事件的时候，都会冒泡到最外层的div上，所以都会触发，这就是事件委托，委托它们父级代为执行事件
 
@@ -786,7 +786,7 @@ js一般写法
   }
 ```
 
-##事件委托写法
+## 事件委托写法
 
 ```
 window.onload = function(){
@@ -818,7 +818,7 @@ window.onload = function(){
 }
 ```
 
-##bind()简单原理
+## bind()简单原理
 
 ```
 Function.prototype.testBind = function (scope) {
@@ -840,7 +840,7 @@ testBindBar("Bar!");                     // Foo Bar!
 
 ```
 
-##ajax的优点和缺点
+## ajax的优点和缺点
 优点：
 
 ```
@@ -865,7 +865,7 @@ testBindBar("Bar!");                     // Foo Bar!
 
 （5）不容易调试。
 ```
-##mouseover/mouseout与mouseenter/mouseleave的区别与联系
+## mouseover/mouseout与mouseenter/mouseleave的区别与联系
 1. mouseover/mouseout是标准事件，所有浏览器都支持；mouseenter/mouseleave是IE5.5引入的特有事件后来被DOM3标准采纳，现代标准浏览器也支持
 2. mouseover/mouseout是冒泡事件；mouseenter/mouseleave不冒泡。需要为多个元素监听鼠标移入/出事件时，推荐mouseover/mouseout托管，提高性能
 3. 标准事件模型中event.target表示发生移入/出的元素,vent.relatedTarget对应移出/如元素；在老IE中event.srcElement表示发生移入/出的元素，event.toElement表示移出的目标元素，event.fromElement表示移入时的来源元素
@@ -911,7 +911,7 @@ function mouseoutHandler(e) {
 </script>
 ```
 
-##Event和Event.target
+## Event和Event.target
 * altKey	 返回当事件被触发时，"ALT" 是否被按下。
 * button	 返回当事件被触发时，哪个鼠标按钮被点击。
 * clientX	返回当事件被触发时，鼠标指针的水平坐标。
@@ -945,7 +945,7 @@ function mouseoutHandler(e) {
 * onsubmit	确认按钮被点击。
 * onunload	用户退出页面。
 
-###标准event属性
+### 标准event属性
 
 * bubbles	返回布尔值，指示事件是否是起泡事件类型。
 * cancelable	返回布尔值，指示事件是否可拥可取消的默认动作。
@@ -955,12 +955,12 @@ function mouseoutHandler(e) {
 * timeStamp	返回事件生成的日期和时间。
 * type	返回当前 Event 对象表示的事件的名称
 
-###标准event方法
+### 标准event方法
 * initEvent()	初始化新创建的 Event 对象的属性。
 * preventDefault()	通知浏览器不要执行与事件关联的默认动作。
 * stopPropagation()	不再派发事件。
 
-##函数声明与表达式的区别
+## 函数声明与表达式的区别
 
 函数声明的语法：
 
@@ -996,14 +996,14 @@ myFunc(function(){
 
 函数表达式与其他表达式一样，在使用前必须赋值
 
-####关于区别
+#### 关于区别
 1、函数声明中函数名是必须的，函数表达式中则是可选的。
 
 2、用函数声明定义的函数，函数可以在函数声明之前调用，而用函数表达式定义的函数则只能在声明之后调用。
 
 根本原因在于解析器对于这两种定义方式读取的顺序不同：解析器会实现读取函数声明，即函数声明放在任意位置都可以被调用；而对于函数表达式，解析器只有在读到函数表达式所在那一行时才会开始执行（详情请看第一部分“函数定义的方式”）。
 
-##深拷贝实现
+## 深拷贝实现
 
 ```
     //定义检测数据类型的功能函数
@@ -1040,7 +1040,7 @@ myFunc(function(){
 
 ```
 
-##JS拖拽功能的实现
+## JS拖拽功能的实现
 
 ```
 首先是三个事件，分别是mousedown，mousemove，mouseup
@@ -1058,7 +1058,7 @@ clientX，clientY标识的是鼠标的坐标，分别标识横坐标和纵坐标
 
 ```
 
-##js中的job queue
+## js中的job queue
 
 js中的事件执行，首先执行主线程中的同步任务，当主线程任务执行完毕后，再从event loop(job queue)中读取异步任务
 
@@ -1081,7 +1081,7 @@ process.nextTick, Promises, Object.observe, MutationObserver
 
 script(主程序代码)—>process.nextTick—>Promises...——>setTimeout——>setInterval——>setImmediate——> I/O——>UI rendering
 
-##实现node中的Events模块
+## 实现node中的Events模块
 
 实现类似于
 
@@ -1120,9 +1120,9 @@ function Events(){
 }
 ```
 
-##cookie
+## cookie
 
-###coookie的构成
+### coookie的构成
 
 ```
 1. 名称 2.值 3.域 4.路径 5.失效时间 6.安全标志
@@ -1132,7 +1132,7 @@ content-type:text/html
 Set-Coookie:name=value;domain=.wrox.com;exoires=Mon,22-Jan-07 07:10:24;
 ```
 
-###javascript中的cookie
+### javascript中的cookie
 使用`document.cookie`
 
 1.使用获取cookie时返回：‘name=value1;name2=value2;name3=value3’。返回一系列由分号分隔开的名值对
@@ -1145,14 +1145,14 @@ document.cookie="name=value;expires=有效时间;path=domain_path;domain=domain_
 设置secure表明这个cookie只有通过ssl连接才能传输
 ```
 
-###封装cookie
+### 封装cookie
 有JavaScript中读写cookie不方便，所以需要封装方法
 
 ```
 红书p631
 ```
 
-##apply和call的实现原理
+## apply和call的实现原理
 
 ```
 Function.prototype.call2=function(context){
