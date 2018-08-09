@@ -1,5 +1,6 @@
 # JavaScript原生
-## 1.实现jquery中的`$`
+
+## 1.实现jquery中的`## 
 
 ```javascript
 function $(selector){
@@ -913,52 +914,52 @@ function mouseoutHandler(e) {
 
 ## Event和Event.target
 * altKey	 返回当事件被触发时，"ALT" 是否被按下。
-* button	 返回当事件被触发时，哪个鼠标按钮被点击。
-* clientX	返回当事件被触发时，鼠标指针的水平坐标。
-* clientY	返回当事件被触发时，鼠标指针的垂直坐标。
-* ctrlKey	返回当事件被触发时，"CTRL" 键是否被按下。
-* metaKey	返回当事件被触发时，"meta" 键是否被按下。
-* relatedTarget	返回与事件的目标节点相关的节点。
-* screenX	返回当某个事件被触发时，鼠标指针的水平坐标。
-* screenY	返回当某个事件被触发时，鼠标指针的垂直坐标。
-* shiftKey	返回当事件被触发时，"SHIFT" 键是否被按下。
+	 button	 返回当事件被触发时，哪个鼠标按钮被点击。
+	 clientX	返回当事件被触发时，鼠标指针的水平坐标。
+	 clientY	返回当事件被触发时，鼠标指针的垂直坐标。
+	 ctrlKey	返回当事件被触发时，"CTRL" 键是否被按下。
+	 metaKey	返回当事件被触发时，"meta" 键是否被按下。
+	 relatedTarget	返回与事件的目标节点相关的节点。
+	 screenX	返回当某个事件被触发时，鼠标指针的水平坐标。
+	 screenY	返回当某个事件被触发时，鼠标指针的垂直坐标。
+	 shiftKey	返回当事件被触发时，"SHIFT" 键是否被按下。
 
-* onabort	图像的加载被中断。
-* onblur	元素失去焦点。
-* onchange	域的内容被改变。
-* onclick	当用户点击某个对象时调用的事件句柄。
-* ondblclick	当用户双击某个对象时调用的事件句柄。
-* onerror	在加载文档或图像时发生错误。
-* onfocus	元素获得焦点。
-* onkeydown	某个键盘按键被按下。
-* onkeypress	某个键盘按键被按下并松开。
-* onkeyup	某个键盘按键被松开。
-* onload	一张页面或一幅图像完成加载。
-* onmousedown	鼠标按钮被按下。
-* onmousemove	鼠标被移动。
-* onmouseout	鼠标从某元素移开。
-* onmouseover	鼠标移到某元素之上。
-* onmouseup	鼠标按键被松开。
-* onreset	重置按钮被点击。
-* onresize	窗口或框架被重新调整大小。
-* onselect	文本被选中。
-* onsubmit	确认按钮被点击。
-* onunload	用户退出页面。
+	 onabort	图像的加载被中断。
+	 onblur	元素失去焦点。
+	 onchange	域的内容被改变。
+	 onclick	当用户点击某个对象时调用的事件句柄。
+	 ondblclick	当用户双击某个对象时调用的事件句柄。
+	 onerror	在加载文档或图像时发生错误。
+	 onfocus	元素获得焦点。
+	 onkeydown	某个键盘按键被按下。
+	 onkeypress	某个键盘按键被按下并松开。
+	 onkeyup	某个键盘按键被松开。
+	 onload	一张页面或一幅图像完成加载。
+	 onmousedown	鼠标按钮被按下。
+	 onmousemove	鼠标被移动。
+	 onmouseout	鼠标从某元素移开。
+	 onmouseover	鼠标移到某元素之上。
+	 onmouseup	鼠标按键被松开。
+	 onreset	重置按钮被点击。
+	 onresize	窗口或框架被重新调整大小。
+	 onselect	文本被选中。
+	 onsubmit	确认按钮被点击。
+	 onunload	用户退出页面。
 
 ### 标准event属性
 
 * bubbles	返回布尔值，指示事件是否是起泡事件类型。
-* cancelable	返回布尔值，指示事件是否可拥可取消的默认动作。
-* currentTarget	返回其事件监听器触发该事件的元素。
-* eventPhase	返回事件传播的当前阶段。
-* target	返回触发此事件的元素（事件的目标节点）。
-* timeStamp	返回事件生成的日期和时间。
-* type	返回当前 Event 对象表示的事件的名称
+	 cancelable	返回布尔值，指示事件是否可拥可取消的默认动作。
+	 currentTarget	返回其事件监听器触发该事件的元素。
+	 eventPhase	返回事件传播的当前阶段。
+	 target	返回触发此事件的元素（事件的目标节点）。
+	 timeStamp	返回事件生成的日期和时间。
+	 type	返回当前 Event 对象表示的事件的名称
 
 ### 标准event方法
 * initEvent()	初始化新创建的 Event 对象的属性。
-* preventDefault()	通知浏览器不要执行与事件关联的默认动作。
-* stopPropagation()	不再派发事件。
+	 preventDefault()	通知浏览器不要执行与事件关联的默认动作。
+	 stopPropagation()	不再派发事件。
 
 ## 函数声明与表达式的区别
 
@@ -1005,7 +1006,9 @@ myFunc(function(){
 
 ## 深拷贝实现
 
-```
+
+
+```javascript
     //定义检测数据类型的功能函数
     function checkedType(target) {
       return Object.prototype.tostring.call(target).slice(8, -1)
@@ -1018,7 +1021,7 @@ myFunc(function(){
       if (targetType === 'object') {
         result = {}
       } else if (targetType === 'Array') {
-        result = []
+        result = []不
       } else {
         return target
       }
@@ -1166,3 +1169,98 @@ Function.prototype.call2=function(context){
     delete context.fn
 }
 ```
+## 实现拖拽功能
+
+```java
+<div class="wrapper">
+  <div id="dragCircle">来拖我呀</div>  
+</div>
+
+function posLeft(obj){
+    var iLeft = 0;
+    while(obj){
+        iLeft += obj.offsetLeft;
+        obj = obj.offsetParent;
+        if(obj && obj!=document.body && obj!=document.documentElement){
+            iLeft += getStyle(obj, 'borderLeftWidth');
+        }
+    }
+    return iLeft;
+}
+function posTop(obj){
+    var iTop = 0;
+    while(obj){
+        iTop += obj.offsetTop;
+        obj = obj.offsetParent;
+        if(obj && obj!=document.body && obj!=document.documentElement){
+            iTop += getStyle(obj, 'borderTopWidth');
+        }
+    }
+    return iTop;
+}
+function getStyle(obj,attr){
+    if(obj.currentStyle){
+        return parseFloat( obj.currentStyle[attr]) || 0;
+    }
+    return parseFloat( getComputedStyle(obj)[attr]) || 0;
+}
+window.onload = function() {
+  var dragCircle = document.getElementById('dragCircle');
+  var wrapper = document.querySelector(".wrapper")
+  var range = {
+    left    : posLeft(wrapper),  
+    right   : posLeft(wrapper) + wrapper.offsetWidth - dragCircle.offsetWidth,
+    top     : posTop(wrapper),
+    bottom  : posTop(wrapper) + wrapper.offsetHeight - dragCircle.offsetHeight
+  };
+// 获取鼠标点击时在div中的相对位置
+    dragCircle.onmousedown = function(ev) {
+        var ev = ev || window.event; 
+        var relaX = ev.clientX - this.offsetLeft;
+        var relaY = ev.clientY - this.offsetTop;
+
+// 获取当前鼠标位置，减去与div的相对位置得到当前div应该被拖拽的位置
+        document.onmousemove = function(ev) {
+            var ev = ev || window.event;
+          if(ev.clientX - relaX < range.left) {
+           dragCircle.style.left = range.left + 'px'
+          } else if (ev.clientX - relaX > range.right) {
+            dragCircle.style.left = range.right + 'px'
+          } else {
+           dragCircle.style.left = ev.clientX - relaX + 'px'
+          }
+          if(ev.clientY - relaY < range.top) {
+           dragCircle.style.top = range.top + 'px'
+          } else if (ev.clientY - relaY > range.bottom) {
+            dragCircle.style.top = range.bottom + 'px'
+          } else {
+           dragCircle.style.top = ev.clientY - relaY + 'px'
+          }
+        };
+        document.onmouseup = function(ev) {
+          var ev = ev || window.event;
+          document.onmousemove = null;
+          document.onmouseup = null;
+         }
+     }
+}
+```
+
+## 前后端数据传输的几种方法
+
+
+
+```javascript
+第一种：ajax
+
+传给后台的数据通过json封装起来，再用ajax将json传到后台
+
+2、通过form表单的action传值
+
+一般情况下数值在传给后台之前需要校验，可以在form中的onsubmit调用js方法进行校验，当js方法返回值为true时，触发action，当js方法返回值为false时，action不触发。这样处理的好处在于当用户输入不正确时，不会刷新页面，表单仍然会保留用户之前的输入
+
+3. 通过dom获取标签，触发标签的submit方法，直接提交数据到后台
+```
+
+
+
