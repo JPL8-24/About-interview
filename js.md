@@ -13,8 +13,6 @@ function $(selector){
 
 ```
     function ajax (info) {
-      // var APIROOT = 'https://college.baicizhan.com/api'
-      
       var url = info.path
       var method = info.method
       var data = info.data
@@ -147,13 +145,15 @@ a <   c
 </body>
 ```
 
-##7 offsetWidth/offsetHeight,clientWidth/clientHeight与scrollWidth/scrollHeight的区别
+## 7 offsetWidth/offsetHeight,clientWidth/clientHeight与scrollWidth/scrollHeight的区别
+
 * offsetWidth/offsetHeight返回值包含content + padding + border，效果与e.getBoundingClientRect()相同
 * clientWidth/clientHeight返回值只包含content + padding，如果有滚动条，也不包含滚动条
 * scrollWidth/scrollHeight返回值包含content + padding + 溢出内容的尺寸
 
-##8 Promise原理
-首先先定义一个Promise函数，并且接受一个executor执行函数，将resolve和reject传参传进去，定义私有属性status，value，reason，onResolvedCallbacks，onRejectedCallbacks。promise有三个状态：初始状态为pending，成功为resolved，失败为reject。对promise的prototype挂载一个then方法（构造函数.prototype===构造函数的实例）,then方法中传入一个成功的回掉和失败毁掉，若成功去成功回调，失败取失败回调。onResolvedCallbacks存放成功异步函数的回调，存放失败异步函数回调。
+## 8 Promise原理
+
+首先先定义一个Promise函数，并且接受一个executor执行函数，将resolve和reject传参传进去，定义私有属性status，value，reason，onResolvedCallbacks，onRejectedCallbacks。promise有三个状态：初始状态为pending，成功为resolved，失败为reject。对promise的prototype挂载一个then方法（构造函数.prototype===构造函数的实例）,then方法	中传入一个成功的回掉和失败毁掉，若成功去成功回调，失败取失败回调。onResolvedCallbacks存放成功异步函数的回调，存放失败异步函数回调。
 
 ### 初步实现
 
@@ -278,7 +278,7 @@ mypromise.prototype.then=function(onFullfilled,onRejected){
 				})
 			})
 		case "resolved":
-			promise = new mypromise((resolve,reject)=>{
+			promise2 = new mypromise((resolve,reject)=>{
 				try(
 					resolve(onFullfilled(self.value))
 				)catch(e){
@@ -533,7 +533,7 @@ Object.prototype.__proto__===null
 
 ```
 
-## 9JavaScript闭包
+## 9 JavaScript闭包
 
 理解闭包的关键在于：外部函数调用之后其变量对象本应该被销毁，但闭包的存在使我们仍然可以访问外部函数的变量对象。
 
@@ -743,12 +743,13 @@ console.log(getA()); //2
 </body>
 </html>
 ```
-##判断某数据类型，全浏览器兼容
+## 判断某数据类型，全浏览器兼容
+
 ```
 Object.prototype.toString.call(arg)==="[object Type]"
 ```
 
-##根据可视窗口宽度自动调节html根元素字体大小以调整rem大小，实现自适应页面
+## 根据可视窗口宽度自动调节html根元素字体大小以调整rem大小，实现自适应页面
 
 ```
 (function (win, doc) {
@@ -1021,7 +1022,7 @@ myFunc(function(){
       if (targetType === 'object') {
         result = {}
       } else if (targetType === 'Array') {
-        result = []不
+        result = []
       } else {
         return target
       }
@@ -1169,6 +1170,27 @@ Function.prototype.call2=function(context){
     delete context.fn
 }
 ```
+```javascript
+Function.prototype.myapply=function(context){
+      var context = context || window
+  context.fn = this
+
+  var result
+  // 需要判断是否存储第二个参数
+  // 如果存在，就将第二个参数展开
+  if (arguments[1]) {
+    result = context.fn(...arguments[1])
+  } else {
+    result = context.fn()
+  }
+
+  delete context.fn
+  return result
+}
+```
+
+
+
 ## 实现拖拽功能
 
 ```java
